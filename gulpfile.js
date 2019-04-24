@@ -112,7 +112,7 @@ const css = () => {
 const js = () => {
   return src(SRC+'/js/*.js', { sourcemaps: true })
     .pipe(plumber({errorHandler: notify.onError("<%= error.message %>")}))
-    .pipe(concat('app.min.js'))
+    .pipe(concat('app.js'))
     .pipe(dest(DST_ASSETS+'/js', { sourcemaps: './__maps' }))
 }
 
