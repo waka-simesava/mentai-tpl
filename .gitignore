@@ -1,0 +1,50 @@
+# --------------------
+# Linux
+# --------------------
+
+*~
+
+# --------------------
+# Apple OS X
+# --------------------
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# --------------------
+# Microsoft Windows
+# --------------------
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# --------------------
+# private environment
+# --------------------
+
+/ftpdata.json
+/symlink_config.js
+
+# --------------------
+# npm & bower & etc
+# --------------------
+
+/.tmp/
+*.log
+/node_modules/
+/bower_components/
+/.vagrant/
+# .htaccess
+# .htpasswd
+# robots.txt
