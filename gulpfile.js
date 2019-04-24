@@ -1,4 +1,7 @@
 const
+  wp = true // <= WprdPress 利用の場合は true（HTML吐き出し先が `__static` に）
+
+const
   fs = require('fs'),
   data = require('gulp-data'),
   { src, dest, series, parallel, watch, lastRun } = require('gulp'),
@@ -20,7 +23,10 @@ const
 const
   SRC = './src',
   DST = './dest',
-  DST_ASSETS = './dest/_assets'
+  DST_ASSETS = DST+'/_assets'
+
+let DST_HTML = DST
+if (wp) DST_HTML = DST+'/__static'
 
 const locals = {
   'site': JSON.parse(fs.readFileSync('./src/data/site.json'))
@@ -68,7 +74,7 @@ const pug_html = () => {
       basedir: './src/pug/',
       pretty: '  ',
     }))
-    .pipe(dest(DST))
+    .pipe(dest(DST_HTML))
 }
 
 // ----------------------------------------
@@ -77,16 +83,7 @@ const pug_html = () => {
 
 const plain_html = () => {
   return src(SRC+'/html/*.html')
-    .pipe(dest(DST))
-}
-
-// ----------------------------------------
-// HTML Build
-// ----------------------------------------
-
-const html = (done) => {
-  series(pug_html, plain_html)
-  done()
+    .pipe(dest(DST_HTML))
 }
 
 // ----------------------------------------
@@ -160,8 +157,10 @@ const images = () => {
 const BS_OPTION = {
   // port: 8080,
   server: {
-    baseDir: './dest/',
-    index: 'index.html',
+    baseDir: [
+      DST,
+      DST+'/__static'
+    ]
   },
   reloadOnRestart: true,
 }
@@ -203,8 +202,7 @@ const watchFiles = (done) => {
 // タスク
 // ========================================
 
-exports.html = html
 exports.images = images
 exports.js = js
 exports.css = css
-exports.default = series(parallel(js, css, html, images), series(browsersync, watchFiles))
+exports.default = series(parallel(js, css, plain_html, pug_html, images), series(browsersync, watchFiles))
