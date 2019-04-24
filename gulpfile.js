@@ -1,34 +1,152 @@
 const
-  { src, dest, series, parallel, watch } = require('gulp'),
+  fs = require('fs'),
+  data = require('gulp-data'),
+  { src, dest, series, parallel, watch, lastRun } = require('gulp'),
   pug = require('gulp-pug'),
   sass = require('gulp-sass'),
   sassGlob = require('gulp-sass-glob'),
+  autoprefixer = require('gulp-autoprefixer'),
   minifyCSS = require('gulp-csso'),
   concat = require('gulp-concat'),
+  notify = require('gulp-notify'),
+  plumber = require('gulp-plumber'),
+  path = require('path'),
+  imagemin = require('gulp-imagemin'),
+  mozjpeg = require('imagemin-mozjpeg'),
+  pngquant = require('imagemin-pngquant'),
+  changed = require('gulp-changed'),
   browser = require('browser-sync')
 
-// ========================================
-// 必須タスク
-// ========================================
+const
+  SRC = './src',
+  DST = './dest',
+  DST_ASSETS = './dest/_assets'
 
-function html() {
-  return src('./src/pug/*.pug')
-    .pipe(pug())
-    .pipe(dest('./dest/html'))
+const locals = {
+  'site': JSON.parse(fs.readFileSync('./src/data/site.json'))
 }
 
-function css() {
-  return src('./src/sass/*.scss')
+// ========================================
+// 必須タスク（コンパイル）
+// ========================================
+
+// ----------------------------------------
+// Pug
+// ----------------------------------------
+
+const pug_html = () => {
+  return src([
+    SRC+'/pug/**/*.pug',
+    '!'+SRC+'/pug/**/_*.pug'
+  ])
+    .pipe(plumber({errorHandler: notify.onError("<%= error.message %>")}))
+    .pipe(data(function(file) {
+      locals.relativePath = path.relative(
+        file.base,
+        file.path.replace(/.pug$/,'.html')
+      )
+      locals.currentDir = path.relative(
+        file.base,
+        file.path.replace(/index.pug$/,'')
+      )
+      // If lower page
+      if ( locals.currentDir.length > 1 ) {
+        locals.currentDir += "/";
+      }
+      let namedPug = 0;
+      let dirCount = 0;
+      locals.depth = ""
+      if ( locals.currentDir.length ) {
+        if ( locals.currentDir.match('.pug') ) {namedPug = 1}
+        dirCount = locals.currentDir.match(/\//gm).length - namedPug;
+        for (var i = 0; i < dirCount; i++) {locals.depth += '../'}
+      }
+      return locals
+    }))
+    .pipe(pug({
+      locals: locals,
+      basedir: './src/pug/',
+      pretty: '  ',
+    }))
+    .pipe(dest(DST))
+}
+
+// ----------------------------------------
+// Plain HTML
+// ----------------------------------------
+
+const plain_html = () => {
+  return src(SRC+'/html/*.html')
+    .pipe(dest(DST))
+}
+
+// ----------------------------------------
+// HTML Build
+// ----------------------------------------
+
+const html = (done) => {
+  series(pug_html, plain_html)
+  done()
+}
+
+// ----------------------------------------
+// SCSS
+// ----------------------------------------
+
+const css = () => {
+  return src(SRC+'/sass/*.scss', { sourcemaps: true })
+    .pipe(plumber({errorHandler: notify.onError("<%= error.message %>")}))
     .pipe(sassGlob())
-    .pipe(sass())
-    .pipe(minifyCSS())
-    .pipe(dest('./dest/_assets/css'))
+    .pipe(sass({outputStyle: 'nested'}))
+    .pipe(autoprefixer({browsers: [
+      "last 3 versions",
+      "ie >= 11",
+      "Android >= 4",
+      "ios_saf >= 10"
+    ]}))
+    // .pipe(minifyCSS())
+    .pipe(dest(DST_ASSETS+'/css', { sourcemaps: './__maps' }))
 }
 
-function js() {
-  return src('./src/js/*.js', { sourcemaps: true })
+// ----------------------------------------
+// JS
+// ----------------------------------------
+
+const js = () => {
+  return src(SRC+'/js/*.js', { sourcemaps: true })
+    .pipe(plumber({errorHandler: notify.onError("<%= error.message %>")}))
     .pipe(concat('app.min.js'))
-    .pipe(dest('./dest/_assets/js', { sourcemaps: true }))
+    .pipe(dest(DST_ASSETS+'/js', { sourcemaps: './__maps' }))
+}
+
+// ----------------------------------------
+// Image
+// ----------------------------------------
+
+const IMGMIN_OPTION = [
+  pngquant({
+    quality: [0.7, 0.85],
+  }),
+  mozjpeg({
+    quality: 85,
+  }),
+  imagemin.gifsicle(),
+  imagemin.jpegtran(),
+  imagemin.optipng(),
+  imagemin.svgo({
+    removeViewBox: false,
+  }),
+]
+
+const images = () => {
+  return src(SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)')
+  // return src([
+  //   SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)',
+  //   '!'+SRC+'/img/favicon/**'
+  // ],{since: lastRun(images)})
+    .pipe(changed(DST_ASSETS+'/img'))
+    .pipe(imagemin(IMGMIN_OPTION))
+    .pipe(dest(DST_ASSETS+'/img'))
 }
 
 // ========================================
@@ -36,7 +154,7 @@ function js() {
 // ========================================
 
 // ----------------------------------------
-// ブラウザ関連
+// ローカルサーバー・自動リロード
 // ----------------------------------------
 
 const BS_OPTION = {
@@ -47,41 +165,46 @@ const BS_OPTION = {
   },
   reloadOnRestart: true,
 }
-function browsersync(done) {
+
+const browsersync = (done) => {
   browser.init(BS_OPTION)
   done()
 }
 
-function watchFiles(done) {
-  const browserReload = () => {
+// ========================================
+// ファイルの監視
+// ========================================
+
+const watchFiles = (done) => {
+
+  const RELOAD = () => {
     browser.reload()
     done()
   }
-  // gulp.watch(paths.styles.src).on('change', gulp.series(styles, browserReload))
 
-  watch('./src/sass/**/*.scss').on('change', series(css, browserReload))
+  // ----------------------------------------
+  // DST 配下の監視 → 自動リロード
+  // ----------------------------------------
 
+  watch(DST).on('change', series(RELOAD))
 
+  // ----------------------------------------
+  // 自動コンパイル
+  // ----------------------------------------
 
-  // gulp.watch(paths.styles.src).on('change', gulp.series(styles, browserReload))
-  // gulp.watch(paths.scripts.src).on('change', gulp.series(scripts, esLint, browserReload))
-  // gulp.watch(paths.html.src).on('change', gulp.series(html, browserReload))
+  watch(SRC+'/**/*.pug').on('change', series(pug_html))
+  watch(SRC+'/**/*.html').on('change', series(plain_html))
+  watch(SRC+'/**/*.scss').on('change', series(css))
+  watch(SRC+'/**/*.js').on('change', series(js))
+  watch(SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)',series(images))
 }
 
+// ========================================
+// タスク
+// ========================================
 
-// function reload() {
-//   browser.reload()
-// }
-
-
-// exports.js = js
-// exports.css = css
-// exports.html = html
-// exports.default = parallel(html, css, js)
-
-// gulp.task('default', gulp.series(gulp.parallel(scripts, styles, html), gulp.series(browsersync, watchFiles)));
-
-exports.default = series(parallel(js, css, html), series(browsersync, watchFiles))
-
-// exports.default = parallel(html, css, js, )
-// exports.default = css
+exports.html = html
+exports.images = images
+exports.js = js
+exports.css = css
+exports.default = series(parallel(js, css, html, images), series(browsersync, watchFiles))

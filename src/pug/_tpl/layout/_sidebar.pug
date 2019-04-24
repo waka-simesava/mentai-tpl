@@ -1,0 +1,85 @@
+mixin sidebar
+
+  aside.l-sidebar.u-MarcellusSC.u-hidden--ltXS(role='complementary')
+    h2.p-page-list__title
+      a.p-page-list__label.u-MarcellusSC.is-current(href='/', rel='/') LEGALAID
+    nav.p-page-list
+      ul.p-page-list__body
+        li.p-page-list__item
+          a.p-page-list__content.is-current(href='/') Home
+        li.p-page-list__item
+          a.p-page-list__content.is-current(href='/about/') About
+        li.p-page-list__item
+          a.p-page-list__content(href='/topics/') Topics
+        li.p-page-list__item
+          a.p-page-list__content(href='/company/') Company
+        li.p-page-list__item
+          a.p-page-list__content(href='/contact/') Contact
+    nav.p-page-list
+      h2.p-page-list__title
+        span.p-page-list__label.u-MarcellusSC Terms
+      ul.p-page-list__body
+        li.p-page-list__item
+          a.p-page-list__content(href='/privacy-policy/') 個人情報保護方針
+        li.p-page-list__item
+          a.p-page-list__content(href='/cookies-policy/') Cookie の取扱に関する方針
+
+mixin sidebar-post
+
+  aside.l-sidebar(role='complementary')
+    h2.l-sidebar__title.u-MarcellusSC Topics
+    nav.p-page-list
+      h3.p-page-list__title
+        span.p-page-list__label.u-MarcellusSC Category
+      ul.p-page-list__body.u-MarcellusSC
+        li.p-page-list__item
+          a.p-page-list__content(href='/category/news/') News
+        li.p-page-list__item
+          a.p-page-list__content(href='/category/release/') Release
+    nav.p-page-list
+      h3.p-page-list__title
+        span.p-page-list__label.u-MarcellusSC Tags
+      ul.p-page-list__tag
+        li
+          a(href='/tag/pwa/') PWA
+        li
+          a(href='/tag/web/') WEB
+        li
+          a(href='/tag/web-app/') WEBアプリ
+        li
+          a(href='/tag/web-system/') WEBシステム
+        li
+          a(href='/tag/multi-device/') マルチデバイス
+        li
+          a(href='/tag/renewal/') リニューアル
+    nav.p-page-list
+      h3.p-page-list__title
+        span.p-page-list__label.u-MarcellusSC Recent Posts
+      ul.p-page-list-posts
+        li.p-page-list-posts__item
+          a.p-page-list-posts__body(href='/2018/09/02/renewal/')
+            figure.p-page-list-posts__thumb
+              img.attachment-full.size-full.wp-post-image(width='1200', height='630', src='/_source/_tmp/uploads/thum.png', alt='')
+            .p-page-list-posts__detail
+              date.p-page-list-posts__date.u-MarcellusSC
+                span.p-page-list-posts__date-body 2018.09.02
+              h4.p-page-list-posts__title
+                | 弊社WEBサイトリニューアルのお知らせ
+        li.p-page-list-posts__item
+          a.p-page-list-posts__body(href='/2018/08/01/real-connect/')
+            figure.p-page-list-posts__thumb
+              img.attachment-full.size-full.wp-post-image(width='1200', height='800', src='/_source/_tmp/uploads/thum-1.png', alt='')
+            .p-page-list-posts__detail
+              date.p-page-list-posts__date.u-MarcellusSC
+                span.p-page-list-posts__date-body 2018.08.01
+              h4.p-page-list-posts__title
+                | 株式会社リアルコネクトと提携し、新しいソー…
+        li.p-page-list-posts__item
+          a.p-page-list-posts__body(href='/2018/04/02/legal-go/')
+            figure.p-page-list-posts__thumb
+              img.attachment-full.size-full.wp-post-image(width='1200', height='800', src='/_source/_tmp/uploads/thum-legalgo-1.jpg', alt='')
+            .p-page-list-posts__detail
+              date.p-page-list-posts__date.u-MarcellusSC
+                span.p-page-list-posts__date-body 2018.04.02
+              h4.p-page-list-posts__title
+                | 電子契約書プラットフォームサービス「Legal Go…

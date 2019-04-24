@@ -1,1 +1,12 @@
-.test{color:red;display:flex}body{display:block}h1{color:#20b2aa}
+.test {
+  color: green;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+body {
+  display: block; }
+
+h1 {
+  color: lightseagreen; }
+/*# sourceMappingURL=__maps/theme.css.map */

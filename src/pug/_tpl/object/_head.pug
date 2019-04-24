@@ -1,0 +1,95 @@
+//- ========================================
+//- include in header
+//- ========================================
+
+//- ----------------------------------------
+//- basic configuration
+//- ----------------------------------------
+
+meta( charset="UTF-8" )
+meta( http-equiv="X-UA-Compatible" content="IE=edge" )
+meta( name="viewport" content="width=device-width, initial-scale=1.0" )
+meta( name="format-detection" content="telephone=no" )
+if pageTitle
+  title #{pageTitle} | #{site.sitename}
+else
+  title #{site.sitename} | #{site.tagline}
+meta( name="description" content=pageDescription )
+meta( name="keywords" content=pageKeywords )
+meta( name="robots" content="noindex,follow" )
+
+
+//- ----------------------------------------
+//- Fall back of lt IE 9
+//- ----------------------------------------
+
+//- = "\n"
+|
+|
+.
+  <!--[if lt IE 9]>
+//- Fall back of html 5
+script( src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.js" )
+//- Fall back of CSS 3
+script( src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" )
+//- = "\n"
+|
+|
+.
+  <![endif]-->
+
+//- ----------------------------------------
+//- link
+//- ----------------------------------------
+
+block link
+  link( rel="stylesheet" href="/_assets/css/theme.css" )
+link( rel="shortcut icon" href="/_assets/img/favicon/favicon.ico" )
+link( rel="apple-touch-icon" href="/_assets/img/common/og-image-lower.png" )
+link( rel="canonical" href=site.rootUrl + pageUrl )
+
+
+//- ----------------------------------------
+//- Google Tag Manager
+//- ----------------------------------------
+
+// BEGIN Google Tag Manager
+script.
+  
+// END Google Tag Manager
+
+//- Google Tag Manager (noscript)
+
+mixin gtm-noscript
+  // BEGIN Google Tag Manager (noscript)
+  noscript.
+  // END Google Tag Manager (noscript)
+
+//- ----------------------------------------
+//- Open Graph Protocol
+//- ----------------------------------------
+
+- const urlLast = site.rootUrl.slice( 0, -1 )
+if pageOgpTitle
+  meta( property="og:title" content=pageOgpTitle + ' | ' + site.sitename )
+else
+  meta(property="og:title" content=site.sitename)
+meta( property="og:type" content=pageOgpType )
+if pageOgpImage
+  meta( property="og:image" content=urlLast + pageOgpImage )
+else
+  meta( property="og:image" content=urlLast + '/_assets/img/common/og-image.png' )
+meta( property="og:url" content=site.rootUrl + pageUrl )
+meta( property="og:description" content=pageDescription )
+meta( property="og:site_name" content=site.sitename )
+meta( property="og:locale" content=pageLang )
+
+// BEGIN OGP Facebook insights
+meta( property="fb:admins" content=site.fb_admins )
+meta( property="fb:app_id" content=site.fb_app_id )
+// END OGP Facebook insights
+
+//BEGIN OGP Twitter Cards
+meta( name="twitter:card" content=site.tw_card )
+meta( name="twitter:site" content=site.tw_site )
+// END OGP Twitter Cards

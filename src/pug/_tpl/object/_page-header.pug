@@ -1,0 +1,44 @@
+mixin page-header( ttl, enTtl, lead, clr, bgClr, En )
+
+  - let uClr, uBgClr
+
+  if clr
+    - uClr = 'u-' + clr
+  if bgClr
+    - uBgClr = 'u-bg-' + bgClr
+
+  .c-page-header.c-page-header--shift-to-bottom(class=[uClr,uBgClr])
+    .c-page-header__item.c-container
+
+      if enTtl
+
+        .c-page-header__detail
+          if ttl
+            h1.c-page-header__title #{ttl}
+        if En
+          .c-page-header__en-title #{enTtl}
+        if lead
+          p.c-page-header__lead !{lead.replace(/\r?\n|\r/g,"<br>")}
+
+      else
+
+        .c-page-header__detail.c-page-header__detail--center
+          if ttl
+            h1.c-page-header__title.c-page-header__title--large #{ttl}
+          if lead
+            p.c-page-header__lead !{lead.replace(/\r?\n|\r/g,"<br>")}
+
+    block hero-image
+
+
+mixin hero-image( img, opc )
+
+  - let uOpc
+
+  if opc
+    - uOpc = 'opacity:' + opc + ';filter: alpha(opacity=' + 100*opc + ');'
+
+  if img
+    .c-page-header__image(style=uOpc)
+      figure.c-hero-image
+        img.c-hero-image__item( src=img alt=pageTitle )

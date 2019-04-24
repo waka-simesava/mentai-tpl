@@ -1,0 +1,28 @@
+include /_tpl/object/_breadcrumb
+include /_tpl/layout/_sidebar
+include /_tpl/foundation/_variables
+include /_tpl/object/_page-header
+
+doctype html
+html( lang=pageLang )
+  head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# " + pageOgpType + ": http://ogp.me/ns/" + pageOgpType + "#")
+
+    include /_tpl/object/_head
+
+  body#pagetop( class=bodyClass data-root-url='/' )
+
+    +gtm-noscript
+
+    block page-header
+
+    include /_tpl/layout/_header
+
+    block breadcrumb
+
+    include /_tpl/layout/_main
+
+    block bottom
+
+    include /_tpl/layout/_footer
+
+    include /_tpl/object/_script

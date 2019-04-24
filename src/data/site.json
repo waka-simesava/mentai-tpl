@@ -1,0 +1,12 @@
+{
+  "sitename": "サイト名称",
+  "tagline": "株式会社サンプルのメディアサイト「サイト名称」",
+  "description": "ディスクリプションが入ります。",
+  "keywords": "",
+  "rootUrl": "https://www.sample-domain.co.jp/",
+  "developDir": "dest/",
+  "fb_admins": "FB user name",
+  "fb_app_id": "100000000000000",
+  "tw_card": "photo",
+  "tw_site": "your_tw_site_"
+}

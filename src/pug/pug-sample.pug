@@ -1,0 +1,36 @@
+extend /_tpl/foundation/_base
+
+append required
+  - const pageTitle = ''
+  - const englishTitle = ''
+  - const pageDescription = site.description
+  - const pageKeywords = site.keywords
+  - const pageOgpType = 'website'
+  - const pageOgpImage = ''
+  - const lang = 'ja'
+  - const teaser = true
+  - const noindex = false
+
+block page-header
+
+  .p-page-header キービジュアル
+
+block content
+
+  // BEGIN Page Content.
+
+  p Pug サンプル
+  ul
+    li: a(href='./') HTML サンプル
+    li: a(href='./pug-sample.html') Pug サンプル
+    li: a(href='./ejs-sample.html') EJS サンプル
+  .test .test
+  figure
+    img(src="/_assets/img/c001.jpg" alt="画像1")
+    img(src="/_assets/img/c002.jpg" alt="画像2")
+
+  // END Page Content.
+
+block bottom
+
+  .p-closing お問合せブロック

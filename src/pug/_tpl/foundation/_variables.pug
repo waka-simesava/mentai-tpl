@@ -1,0 +1,17 @@
+block required
+
+prepend variables
+  - const pageOgpTitle = pageTitle
+  - const pageUrl = relativePath.replace(/index.html$/,'')
+  - let pageLang
+    if lang
+      - pageLang = lang
+    else
+      - pageLang = 'ja'
+  - let bodyClass = 'lang-type-' + pageLang
+    if pageTitle
+      - bodyClass += ' lower'
+    else
+      - bodyClass += ' index'
+  - let d = new Date();
+  - let stamp = Date.parse(d)
