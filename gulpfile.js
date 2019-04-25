@@ -1,5 +1,11 @@
 const
-  wp = true // <= WordPress 利用の場合は true（HTML吐き出し先が `__static` に）
+  static_dir_use = true, // <= 静的書き出しディレクトリを分ける場合は `true`
+  static_dir_name = '__static' // <= 静的書き出しディレクトリの名前
+
+const
+  SRC = './src',
+  DST = './dest',
+  DST_ASSETS = DST+'/_assets'
 
 const
   fs = require('fs'),
@@ -24,16 +30,11 @@ const
   source = require('vinyl-source-stream'),
   favicons = require('favicons').stream
 
-const
-  SRC = './src',
-  DST = './dest',
-  DST_ASSETS = DST+'/_assets'
-
 let DST_HTML = DST
-if (wp) DST_HTML = DST+'/__static'
+if (static_dir_use) DST_HTML = DST+'/'+static_dir_name
 
 const locals = {
-  'site': JSON.parse(fs.readFileSync('./src/data/site.json'))
+  'site': JSON.parse(fs.readFileSync(SRC+'/data/site.json'))
 }
 
 // ========================================
@@ -75,7 +76,7 @@ const pug_html = () => {
     }))
     .pipe(pug({
       locals: locals,
-      basedir: './src/pug/',
+      basedir: SRC+'/pug/',
       pretty: '  ',
     }))
     .pipe(dest(DST_HTML))
@@ -174,7 +175,7 @@ const BS_OPTION = {
   server: {
     baseDir: [
       DST,
-      DST+'/__static'
+      DST+'/'+static_dir_name
     ]
   },
   reloadOnRestart: true,

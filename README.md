@@ -58,11 +58,12 @@ const
   DST_ASSETS = DST+'/_assets'
 ```
 
-また、WordPress 等でテーマ用の PHP ファイルと、ベースコーディング時の静的ファイルとを分けるかどうかは下記の設定を変えてください。
+また、WordPress 等でテーマ用の PHP ファイルと、ベースコーディング時の静的ファイルとをディレクトリで分けたい場合など下記の設定を変えてください。
 
 ```js
 const
-  wp = true // <= WordPress 利用の場合は true（HTML吐き出し先が `__static` に）
+  static_dir_use = true, // <= 静的書き出しディレクトリを分ける場合は `true`
+  static_dir_name = '__static' // <= 静的書き出しディレクトリの名前
 ```
 
 `true` にすると、HTMLだけ dest が `__static` になります。  
