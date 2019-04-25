@@ -3,7 +3,7 @@ const
   static_dir_name = '__static' // <= 静的書き出しディレクトリの名前
 
 const
-  SRC = './src',
+  SRC = './_src',
   DST = './dest',
   DST_ASSETS = DST+'/_assets'
 

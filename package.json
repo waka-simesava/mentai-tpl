@@ -1,6 +1,6 @@
 {
   "name": "mentai-tpl",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "めんたいテンプレート - プロジェクトYAMAKASA",
   "main": "index.js",
   "scripts": {
