@@ -1,6 +1,6 @@
 {
   "name": "mentai-tpl",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "めんたいテンプレート - プロジェクトYAMAKASA",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,12 @@
   },
   "homepage": "https://github.com/waka-simesava/mentai-tpl#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "babelify": "^10.0.0",
     "browser-sync": "^2.26.4",
+    "browserify": "^16.2.3",
+    "favicons": "^5.3.0",
     "gulp": "^4.0.1",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-changed": "^3.2.0",
@@ -33,7 +38,15 @@
     "gulp-sass": "^4.0.2",
     "gulp-sass-glob": "^1.0.9",
     "imagemin-mozjpeg": "^8.0.0",
-    "imagemin-pngquant": "^7.0.0"
+    "imagemin-pngquant": "^7.0.0",
+    "vinyl-source-stream": "^2.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^1.12.4",
+    "jquery-inview": "^1.1.2",
+    "lodash": "^4.17.11",
+    "object-fit-images": "^3.2.4",
+    "slick-carousel": "^1.8.1",
+    "svgxuse": "^1.2.6"
+  }
 }

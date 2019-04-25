@@ -1,5 +1,5 @@
 const
-  wp = true // <= WprdPress 利用の場合は true（HTML吐き出し先が `__static` に）
+  wp = true // <= WordPress 利用の場合は true（HTML吐き出し先が `__static` に）
 
 const
   fs = require('fs'),
@@ -18,7 +18,11 @@ const
   mozjpeg = require('imagemin-mozjpeg'),
   pngquant = require('imagemin-pngquant'),
   changed = require('gulp-changed'),
-  browser = require('browser-sync')
+  browser = require('browser-sync'),
+  browserify = require('browserify'),
+  babelify   = require('babelify'),
+  source = require('vinyl-source-stream'),
+  favicons = require('favicons').stream
 
 const
   SRC = './src',
@@ -110,10 +114,12 @@ const css = () => {
 // ----------------------------------------
 
 const js = () => {
-  return src(SRC+'/js/*.js', { sourcemaps: true })
-    .pipe(plumber({errorHandler: notify.onError("<%= error.message %>")}))
-    .pipe(concat('app.js'))
-    .pipe(dest(DST_ASSETS+'/js', { sourcemaps: './__maps' }))
+  return browserify(SRC+'/js/_app.js', { debug: false })
+    .transform(babelify, {presets: ['@babel/env']})
+    .bundle()
+    .on('error', notify.onError('<%= error.message %>'))
+    .pipe(source('app.js'))
+    .pipe(dest(DST_ASSETS+'/js'))
 }
 
 // ----------------------------------------
@@ -136,15 +142,24 @@ const IMGMIN_OPTION = [
 ]
 
 const images = () => {
-  return src(SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)')
-  // return src([
-  //   SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)',
-  //   '!'+SRC+'/img/favicon/**'
-  // ],{since: lastRun(images)})
+  return src([
+    SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)',
+    '!'+SRC+'/img/favicon/*.ico'
+  ])
     .pipe(changed(DST_ASSETS+'/img'))
     .pipe(imagemin(IMGMIN_OPTION))
     .pipe(dest(DST_ASSETS+'/img'))
 }
+
+// ----------------------------------------
+// favicon
+// ----------------------------------------
+
+const favicon = () => {
+  return src(SRC+'/img/favicon/*.ico')
+    .pipe(dest(DST_ASSETS+'/img/favicon'))
+}
+
 
 // ========================================
 // 補助タスク
@@ -196,13 +211,15 @@ const watchFiles = (done) => {
   watch(SRC+'/**/*.scss').on('change', series(css))
   watch(SRC+'/**/*.js').on('change', series(js))
   watch(SRC+'/img/**/*.+(jpg|jpeg|png|gif|svg)',series(images))
+  watch(SRC+'/img/favicon/*.ico',series(favicon))
 }
 
 // ========================================
 // タスク
 // ========================================
 
+exports.favicon = favicon
 exports.images = images
 exports.js = js
 exports.css = css
-exports.default = series(parallel(js, css, plain_html, pug_html, images), series(browsersync, watchFiles))
+exports.default = series(parallel(js, css, plain_html, pug_html, images, favicon), series(browsersync, watchFiles))
